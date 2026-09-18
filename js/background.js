@@ -263,7 +263,7 @@ async function getAvailableGeminiModels(apiKey) {
   if (!apiKey) return DEFAULT_GEMINI_MODELS;
 
   try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models`, {
       headers: { "X-goog-api-key": apiKey }
     });
     if (res.ok) {
@@ -405,7 +405,7 @@ async function callGemini(apiKey, prompt) {
 
   for (const model of models) {
     try {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
       const res = await fetch(url, {
         method: "POST",
         headers: {
@@ -662,7 +662,7 @@ async function callGeminiText(apiKey, prompt, allowRetry = true) {
 
   for (const model of models) {
     try {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-goog-api-key": apiKey },
@@ -999,7 +999,7 @@ async function testGeminiKey(rawKey) {
   let lastErr = "";
   for (const model of models) {
     try {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-goog-api-key": apiKey },

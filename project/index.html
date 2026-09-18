@@ -1,0 +1,380 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rakez</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <!-- Vendored locally: MV3 extension-page CSP (script-src 'self') blocks remote CDN scripts. -->
+  <script src="../vendor/chartjs/chart.umd.min.js"></script>
+</head>
+
+<body>
+
+  <main class="snap-container">
+
+    <section class="panel" id="home">
+          <img src="../assets/logo.webp" class="logo">
+          <div class="icon-row">
+            <a href="#dashboard"><img src="../assets/home.webp" class="icon"></a>
+            <a href="#notebook"><img src="../assets/notebook.webp" class="icon"></a>
+            <a href="#analytics"><img src="../assets/analytics.webp" class="icon"></a>
+            <a href="#vault"><img src="../assets/vault.webp" class="icon"></a>
+            <a href="#quiz"><img src="../assets/brain.webp" class="icon"></a>
+            <a href="#settings"><img src="../assets/settings.webp" class="icon"></a>
+            <a href="#export"><img src="../assets/export.webp" class="icon"></a>
+
+          </div>
+    </section>
+
+    <section class="panel" id="dashboard">
+
+  <!-- ACTIVE SESSION -->
+  <div id="dashboard-active" class="dashboard-active">
+    <div class="session-mode-badge-wrap" style="text-align: center; margin-bottom: 8px;">
+      <span class="session-mode-badge" id="dashboard-mode-badge">🎓 Study Mode</span>
+    </div>
+    <p class="dashboard-label">Current Intention</p>
+    <h2 class="dashboard-intention">—</h2>
+
+    <div class="dashboard-timer">00:00:00</div>
+
+    <div class="camera-box" id="camera-box">
+      <video id="webcam" autoplay playsinline muted></video>
+      <div class="camera-overlay">
+        <span class="dot"></span>
+        <span id="status-text">Loading Face AI…</span>
+      </div>
+      <div id="nudge-toast" class="nudge-toast">
+        <span id="nudge-icon">👀</span>
+        <span id="nudge-message">Stay focused!</span>
+      </div>
+    </div>
+
+    <div class="focus-chips">
+      <div class="chip"><span class="chip-label">Presence</span><span id="presence-status" class="chip-value">—</span></div>
+      <div class="chip"><span class="chip-label">Gaze</span><span id="gaze-status" class="chip-value">—</span></div>
+      <div class="chip"><span class="chip-label">Off-task pages</span><span id="live-offtask" class="chip-value">0</span></div>
+    </div>
+
+    <div class="dashboard-actions">
+      <button id="pip-camera-btn" class="btn secondary">⤢ Pop out camera</button>
+      <button id="end-session-btn" class="btn secondary">End session</button>
+    </div>
+  </div>
+
+  <!-- INACTIVE SESSION -->
+  <div id="dashboard-inactive" class="dashboard-inactive">
+    <p class="dashboard-empty">No active session</p>
+
+    <!-- LAST SESSION ANALYSIS -->
+    <div id="session-analysis" class="session-analysis hidden">
+      <h2 class="analysis-title">Last Session Analysis</h2>
+      <p class="analysis-intention" id="analysis-intention">—</p>
+
+      <div class="analysis-stats">
+        <div class="analysis-stat">
+          <span class="analysis-num" id="analysis-focus">—</span>
+          <span class="analysis-cap">Focus Score</span>
+        </div>
+        <div class="analysis-stat">
+          <span class="analysis-num" id="analysis-duration">—</span>
+          <span class="analysis-cap">Duration</span>
+        </div>
+        <div class="analysis-stat">
+          <span class="analysis-num" id="analysis-away">—</span>
+          <span class="analysis-cap">Look-away</span>
+        </div>
+        <div class="analysis-stat">
+          <span class="analysis-num" id="analysis-watched">—</span>
+          <span class="analysis-cap">Camera watched</span>
+        </div>
+        <div class="analysis-stat">
+          <span class="analysis-num" id="analysis-offtask">—</span>
+          <span class="analysis-cap">Off-task pages</span>
+        </div>
+      </div>
+
+      <div class="analysis-summary" id="analysis-summary">Generating AI summary…</div>
+    </div>
+  </div>
+
+    </section>
+
+    <section class="panel" id="notebook">
+  <h1 class="header">Smart Notebook</h1>
+  
+  <div class="notebook-grid">
+    <p class="dashboard-empty" id="notebook-empty">No sessions yet</p>
+  </div>
+    </section>
+
+    <section class="panel" id="analytics">
+  <h1 class="header">Analytics</h1>
+  
+  <div class="stats-grid">
+    <div class="stat-card">
+      <p class="stat-label">Total Focus Time</p>
+      <h2 class="stat-value" id="stat-total-time">0m</h2>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">On-task Pages</p>
+      <h2 class="stat-value" id="stat-ontask">0</h2>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">Off-task Pages</p>
+      <h2 class="stat-value" id="stat-offtask">0</h2>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">Times Ignored</p>
+      <h2 class="stat-value" id="stat-ignored">0</h2>
+    </div>
+  </div>
+
+  <div class="chart-container" style="height: 300px; width: 100%;">
+    <p class="chart-title">Focus Levels (Last 7 Sessions)</p>
+    <canvas id="focusChart"></canvas>
+  </div>
+    </section>
+
+    <section class="panel" id="vault">
+  <h1 class="header">Distraction Vault</h1>
+  <p class="chart-title">Off-task links Rakez caught — visit them after your session, not during.</p>
+
+  <div class="vault-container" id="vault-container">
+    <p class="dashboard-empty" id="vault-empty">No saved distractions yet</p>
+  </div>
+    </section>
+
+    <section class="panel" id="quiz">
+  <h1 class="header">AI Quiz</h1>
+
+  <div class="quiz-container">
+    <div class="quiz-selection">
+      <label class="quiz-label">Topic (type your own, or leave blank to use a session)</label>
+      <input type="text" id="quiz-topic" class="settings-input" placeholder="e.g. Java exceptions">
+
+      <label class="quiz-label">Difficulty</label>
+      <select class="session-selector" id="quiz-level">
+        <option>Easy</option>
+        <option selected>Medium</option>
+        <option>Hard</option>
+      </select>
+
+      <label class="quiz-label">Base on a session's notes (optional)</label>
+      <select class="session-selector" id="quiz-selector"></select>
+
+      <button class="btn secondary" id="generate-quiz-btn">Generate Quiz</button>
+      <span id="quiz-status" class="settings-status"></span>
+    </div>
+
+    <div class="quiz-box hidden" id="quiz-box"></div>
+  </div>
+    </section>
+
+    <section class="panel" id="settings">
+  <h1 class="header">Settings</h1>
+  
+  <div class="settings-container">
+    <div class="setting-item" style="display: flex; align-items: center; justify-content: space-between;">
+      <div>
+        <label>Strict Mode (Auto-close)</label>
+        <p style="font-size: 12px; opacity: 0.6; margin-top: 5px;">Automatically close completely unrelated tabs instantly.</p>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="dash-toggle-strict">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="setting-item" style="display: flex; align-items: center; justify-content: space-between;">
+      <div>
+        <label>Audio Alerts</label>
+        <p style="font-size: 12px; opacity: 0.6; margin-top: 5px;">Play a chime when you drift off task.</p>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="dash-toggle-audio">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="setting-item" style="display: flex; align-items: center; justify-content: space-between;">
+      <div>
+        <label>Posture Tracking</label>
+        <p style="font-size: 12px; opacity: 0.6; margin-top: 5px;">Show a toast when you slouch too close to the screen.</p>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="dash-toggle-posture">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
+
+    <div class="setting-item">
+      <label for="rakez-api-key">Gemini API Key</label>
+      <input type="password" id="rakez-api-key" placeholder="Enter your key..." class="settings-input">
+      <div style="display: flex; gap: 10px; margin-top: 8px;">
+        <button id="save-api-key" class="btn secondary small">Save Key</button>
+        <button id="test-api-key" class="btn secondary small">Test Key</button>
+      </div>
+      <span id="api-key-status" class="settings-status"></span>
+    </div>
+
+    <div class="setting-item">
+      <label for="rakez-allowlist">Always-allowed sites (one domain per line)</label>
+      <textarea id="rakez-allowlist" class="settings-input" rows="4" placeholder="developer.mozilla.org&#10;claude.ai&#10;docs.python.org"></textarea>
+      <button id="save-allowlist" class="btn secondary small">Save</button>
+      <span id="allowlist-status" class="settings-status"></span>
+    </div>
+
+    <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
+
+    <h2 style="font-size: 16px; margin: 0 0 15px; color: #00ffcc; display: flex; align-items: center; gap: 8px;">
+      <span>👨‍🏫</span> Supervisor / Manager Monitoring
+    </h2>
+
+    <div class="setting-item" style="display: flex; align-items: center; justify-content: space-between;">
+      <div>
+        <label>Enable Supervisor Alerts</label>
+        <p style="font-size: 12px; opacity: 0.6; margin-top: 5px;">Send live emails to a teacher or manager when off-task.</p>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="dash-toggle-supervisor">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="setting-item">
+      <label for="supervisor-name">Your Name / Student ID</label>
+      <input type="text" id="supervisor-name" placeholder="e.g. Omar R. (Student #104)" class="settings-input">
+    </div>
+
+    <div class="setting-item">
+      <label for="supervisor-email">Supervisor / Teacher Email</label>
+      <input type="email" id="supervisor-email" placeholder="teacher@university.edu or manager@company.com" class="settings-input">
+    </div>
+
+    <div style="margin: 15px 0; padding: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <span style="font-size: 13px; font-weight: bold; color: #00ffcc;">Email Delivery Provider</span>
+        <span style="font-size: 11px; opacity: 0.6;">Required for live email delivery</span>
+      </div>
+
+      <div class="setting-item" style="margin-bottom: 12px;">
+        <label for="email-provider-select" style="font-size: 12px; margin-bottom: 6px;">Provider</label>
+        <select id="email-provider-select" class="session-selector" style="margin: 0; width: 100%;">
+          <option value="emailjs" selected>EmailJS (Free 200 emails/mo — Recommended)</option>
+          <option value="resend">Resend API Key</option>
+          <option value="webhook">Custom Webhook / Google Script</option>
+        </select>
+      </div>
+
+      <!-- EmailJS fields -->
+      <div id="provider-emailjs-fields">
+        <div class="setting-item" style="margin-bottom: 10px;">
+          <label for="emailjs-public-key" style="font-size: 12px; margin-bottom: 4px;">Public Key</label>
+          <input type="text" id="emailjs-public-key" placeholder="e.g. user_abcdef1234" class="settings-input">
+        </div>
+        <div class="setting-item" style="margin-bottom: 10px;">
+          <label for="emailjs-service-id" style="font-size: 12px; margin-bottom: 4px;">Service ID</label>
+          <input type="text" id="emailjs-service-id" placeholder="e.g. service_gmail" class="settings-input">
+        </div>
+        <div class="setting-item" style="margin-bottom: 10px;">
+          <label for="emailjs-template-id" style="font-size: 12px; margin-bottom: 4px;">Template ID</label>
+          <input type="text" id="emailjs-template-id" placeholder="e.g. template_rakez" class="settings-input">
+        </div>
+        <p style="font-size: 11px; opacity: 0.6; line-height: 1.4;">
+          💡 Free at <a href="https://www.emailjs.com" target="_blank" style="color: #00ffcc; text-decoration: underline;">emailjs.com</a>. Set email template params to: <code>to_email</code>, <code>subject</code>, <code>message</code>.
+        </p>
+      </div>
+
+      <!-- Resend fields -->
+      <div id="provider-resend-fields" class="hidden">
+        <div class="setting-item" style="margin-bottom: 10px;">
+          <label for="resend-api-key" style="font-size: 12px; margin-bottom: 4px;">Resend API Key</label>
+          <input type="password" id="resend-api-key" placeholder="re_123456789..." class="settings-input">
+        </div>
+        <p style="font-size: 11px; opacity: 0.6; line-height: 1.4;">
+          💡 Free at <a href="https://resend.com" target="_blank" style="color: #00ffcc; text-decoration: underline;">resend.com</a> (100 emails/day).
+        </p>
+      </div>
+
+      <!-- Webhook fields -->
+      <div id="provider-webhook-fields" class="hidden">
+        <div class="setting-item" style="margin-bottom: 10px;">
+          <label for="supervisor-webhook" style="font-size: 12px; margin-bottom: 4px;">Webhook URL</label>
+          <input type="url" id="supervisor-webhook" placeholder="https://script.google.com/macros/s/.../exec" class="settings-input">
+        </div>
+        <p style="font-size: 11px; opacity: 0.6; line-height: 1.4;">
+          💡 Receives JSON POST with <code>{ to_email, subject, message, alert_type }</code>.
+        </p>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 10px; margin-top: 8px; margin-bottom: 20px;">
+      <button id="save-supervisor-btn" class="btn secondary small">Save Supervisor Info</button>
+      <button id="test-supervisor-btn" class="btn secondary small">Send Test Alert</button>
+    </div>
+    <span id="supervisor-status" class="settings-status"></span>
+
+    <div class="setting-item" style="display: flex; align-items: center; justify-content: space-between;">
+      <div>
+        <label>Alert when Distraction Warning is Ignored</label>
+        <p style="font-size: 12px; opacity: 0.6; margin-top: 5px;">Trigger email alert if student dismisses the off-task banner.</p>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="dash-toggle-supervisor-ignore">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="setting-item" style="display: flex; align-items: center; justify-content: space-between;">
+      <div>
+        <label>Send End-of-Session Performance Report</label>
+        <p style="font-size: 12px; opacity: 0.6; margin-top: 5px;">Automatically email full session metrics & AI summary when finished.</p>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="dash-toggle-supervisor-summary">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="danger-zone">
+      <h3>Danger Zone</h3>
+      <button id="clear-data-btn" class="btn-danger">Clear All Session Data</button>
+    </div>
+  </div>
+    </section>
+
+    <section class="panel" id="export">
+  <h1 class="header">Export Notes</h1>
+  
+  <div class="export-grid" id="export-grid">
+    <p class="dashboard-empty" id="export-empty">No sessions yet</p>
+  </div>
+</section>
+
+  </main>
+
+  <!-- NOTE VIEWER MODAL -->
+  <div id="note-modal" class="note-modal hidden">
+    <div class="note-modal-card">
+      <button class="note-modal-close" id="note-modal-close">✕</button>
+      <h2 id="note-modal-title">—</h2>
+      <p class="note-modal-date" id="note-modal-date"></p>
+      <div class="note-modal-stats" id="note-modal-stats"></div>
+      <h3>Notes</h3>
+      <pre class="note-modal-notes" id="note-modal-notes"></pre>
+      <h3>AI Summary</h3>
+      <div class="note-modal-summary" id="note-modal-summary"></div>
+    </div>
+  </div>
+
+  <script src="../js/logobounce.js"></script>
+  <script src="../js/dashboard.js"></script>
+  <script type="module" src="../camera/face_tracker.js"></script>
+</body>
+</html>
+

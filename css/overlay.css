@@ -1,0 +1,203 @@
+/* FLOATING BUTTON */
+.rakez-floating-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    z-index: 2147483647; /* Max z-index to stay on top */
+    transition: transform 0.2s ease;
+}
+
+.rakez-floating-icon:hover {
+    transform: scale(1.1);
+}
+
+/* NOTEBOOK WINDOW */
+#rakez-note-window {
+    position: fixed;
+    background: #111c28;
+    border: 1px solid #0095ffff;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    z-index: 2147483647;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.8);
+    overflow: hidden;
+    touch-action: none; /* Required for interact.js */
+    color: white;
+}
+
+.rakez-note-header {
+    padding: 10px;
+    background: rgba(255,255,255,0.08);
+    cursor: grab;
+    display: flex;
+    justify-content: space-between;
+    color: #00ffcc;
+    font-family: monospace;
+    font-size: 12px;
+    user-select: none;
+    height: 20px;
+    align-items: center;
+}
+
+#rakez-note-close {
+    cursor: pointer;
+    padding: 0 4px;
+    font-size: 14px;
+}
+
+#rakez-note-area {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 15px;
+    resize: none;
+    outline: none;
+    font-family: sans-serif;
+    font-size: 14px;
+}
+
+.rakez-note-footer {
+    height: 25px;
+    background: rgba(255,255,255,0.05);
+    cursor: grab;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.rakez-note-footer-bar {
+    width: 30px;
+    height: 2px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+}
+
+#rakez-resizer {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 15px 15px;
+    border-color: transparent transparent #00ffcc transparent;
+    cursor: nwse-resize;
+    z-index: 10;
+}
+
+/* OFF-TASK FEEDBACK BANNER */
+#rakez-feedback {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2147483647;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 90vw;
+    padding: 12px 18px;
+    background: #111c28;
+    border: 1px solid #0095ff;
+    border-radius: 10px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+    font-family: sans-serif;
+    font-size: 14px;
+    animation: rakez-slide-down 0.3s ease;
+}
+
+/* STRICT MODE BLOCKER */
+.rakez-strict-block {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: none !important;
+    max-height: none !important;
+    transform: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-sizing: border-box !important;
+    background: rgba(0, 0, 0, 0.85) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    z-index: 2147483647 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    pointer-events: all !important;
+    color: white !important;
+    font-family: sans-serif !important;
+}
+
+.rakez-strict-block-msg {
+    font-size: 24px !important;
+    font-weight: bold !important;
+    margin-bottom: 20px !important;
+    color: #ff4444 !important;
+    text-align: center !important;
+    max-width: 80% !important;
+}
+
+.rakez-strict-block-btn {
+    padding: 12px 24px !important;
+    font-size: 16px !important;
+    background: #ff4444 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    font-weight: bold !important;
+    transition: background 0.2s !important;
+}
+
+.rakez-strict-block-btn:hover {
+    background: #cc0000 !important;
+}
+
+/* Red = off-task warning, Blue = related-but-not-exact note */
+#rakez-feedback.rakez-offtask { border-color: #ff5d5d; }
+#rakez-feedback.rakez-related { border-color: #2084ff; }
+
+@keyframes rakez-slide-down {
+    from { opacity: 0; transform: translate(-50%, -20px); }
+    to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+#rakez-feedback .rakez-feedback-msg {
+    line-height: 1.4;
+}
+
+#rakez-feedback .rakez-feedback-btn {
+    flex-shrink: 0;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+#rakez-feedback .rakez-feedback-btn:hover {
+    opacity: 0.85;
+}
+
+#rakez-feedback .rakez-refocus {
+    background: #00ffcc;
+    color: #062018;
+}
+
+#rakez-feedback .rakez-ignore {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+}
